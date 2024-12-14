@@ -1,5 +1,4 @@
 {
-  "public": "public",
   "builds": [
     {
       "src": "public/index.html",

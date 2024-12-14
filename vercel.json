@@ -5,15 +5,14 @@
       "use": "@vercel/static"
     }
   ],
+{
   "rewrites": [
-    { "source": "/dashboard", "destination": "/dashboard.html" },
-    { "source": "/styles.css", "destination": "/styles.css" },
-    { "source": "/script.js", "destination": "/script.js" },
-    { "source": "/firebase-config.js", "destination": "/firebase-config.js" },
-    { "source": "/budgetLogic.js", "destination": "/budgetLogic.js" },
-    { "source": "/components/(.*)", "destination": "/src/components/$1" },
-    { "source": "/assets/(.*)", "destination": "/src/assets/$1" },
-    { "source": "/pages/(.*)", "destination": "/src/pages/$1" },
-    { "source": "/(.*)", "destination": "/dashboard.html" }
+    { "source": "/", "destination": "/src/pages/dashboard.html" },
+    { "source": "/styles.css", "destination": "/src/pages/styles.css" },
+    { "source": "/script.js", "destination": "/src/pages/script.js" },
+    { "source": "/firebase-config.js", "destination": "/src/pages/firebase-config.js" },
+    { "source": "/budgetLogic.js", "destination": "/src/pages/budgetLogic.js" }
   ]
+}
+
 }

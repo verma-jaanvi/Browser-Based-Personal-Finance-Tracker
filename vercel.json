@@ -1,11 +1,10 @@
 {
   "builds": [
     {
-      "src": "public/index.html",
+      "src": "src/pages/index.html",
       "use": "@vercel/static"
     }
   ],
-{
   "rewrites": [
     { "source": "/", "destination": "/src/pages/dashboard.html" },
     { "source": "/styles.css", "destination": "/src/pages/styles.css" },
@@ -13,6 +12,4 @@
     { "source": "/firebase-config.js", "destination": "/src/pages/firebase-config.js" },
     { "source": "/budgetLogic.js", "destination": "/src/pages/budgetLogic.js" }
   ]
-}
-
 }

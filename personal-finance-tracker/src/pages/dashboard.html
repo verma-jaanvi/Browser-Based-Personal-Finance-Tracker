@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Tracker</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/personal-finance-tracker/src/assets/logo.png" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <!-- cryptojs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1-crypto-js.js"></script>
+
+    <link rel="icon" type="image/png" sizes="64x64" href="/personal-finance-tracker/src/assets/logo.png" />
+
+</head>
+
+<body>
+    <div class="container mt-4 p-4 shadow rounded-md">
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs mb-4" id="financeTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard"
+                    type="button" role="tab" aria-controls="dashboard" aria-selected="true">
+                    Dashboard
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="add-transaction-tab" data-bs-toggle="tab" data-bs-target="#add-transaction"
+                    type="button" role="tab">
+                    Monthly Goal
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="add-transaction-tab" data-bs-toggle="tab" data-bs-target="#user-details"
+                    type="button" role="tab">
+                    User Details
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#spreadsheet-as"
+                    type="button" role="tab">
+                    Spreadsheet
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#education-resources"
+                    type="button" role="tab">
+                    Education Resources
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button"
+                    role="tab">
+                    Settings
+                </button>
+            </li>
+
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="financeTabsContent">
+            <!-- Dashboard -->
+            <div class="tab-pane dashboard fade show active" id="dashboard" role="tabpanel">
+                <h2 class="text-xl font-semibold mb-3">Dashboard</h2>
+                <div class="row g-2">
+                    <div class="col-md-3 mb-3 box-item">
+                        <h4 class="text-xl font-semibold mb-3">Available Balance:</h4>
+                        <h5 id="balance">₹ 0</h5>
+                    </div>
+                    <div class="col-md-2 m-3 box-item">
+                        <h4 class="mb-3">Savings :</h4>
+                        <h5 id="saved-amount-display">₹ 0</h5>
+                    </div>
+                </div>
+
+
+                <div class="row g-3">
+                    <!-- Chart: Pie Chart -->
+                    <div class="col-md-4 box-item">
+                        <div class="bg-gray-200 p-1 rounded">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Chart: Line Graph -->
+                    <div class="col-md-7 box-item">
+                        <div class="bg-gray-200 p-1 rounded">
+                            <canvas id="lineGraph"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row mt-3">
+                    <!-- Chart: Bar Chart -->
+                    <div class="col-md-6 box-item">
+                        <div class="bg-gray-200 p-4 rounded">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 box-item">
+                    <h3 class="text-lg font-semibold mb-2">Your Categories with Budget</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">No transactions yet!</li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- Add Budget Plan Section -->
+            <div class="tab-pane fade" id="add-transaction" role="tabpanel">
+                <h2 class="text-xl font-semibold mb-3">Add Budget Plan</h2>
+                <form id="Budget-form">
+                    <div class="mb-3">
+                        <label for="Budget-amount" class="form-label">Your total Budget for the month</label>
+                        <input type="number" class="form-control" id="budget-amount" min="0"
+                            placeholder="e.g., 50000.00" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Saved-amount" class="form-label">How much you intend to save for the month</label>
+                        <input type="number" class="form-control" id="Saved-amount" min="0"
+                            placeholder="e.g., 50000.00">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Add Budget</button>
+                </form>
+                <br>
+                <hr><br>
+
+                <h2 class="text-xl font-semibold mb-3">Categorize your plan</h2>
+                <form id="transaction-form">
+                    <div class="mb-3">
+                        <label for="transaction-name" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="transaction-name" placeholder="e.g., Groceries"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="transaction-amount" class="form-label">Total Budget for this category</label>
+                        <input type="number" class="form-control" id="transaction-amount" placeholder="e.g., 50.00"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="transaction-type" class="form-label">Type</label>
+                        <select class="form-select" id="transaction-type" required>
+                            <option value="Expense">Expense</option>
+                            <option value="Savings">Savings</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Add Category</button>
+                </form>
+            </div>
+
+            <!-- User Details -->
+            <div class="tab-pane fade" id="user-details" role="tabpanel">
+                <h2 class="text-xl font-semibold mb-3">User Details</h2>
+                <form id="bankForm">
+                    <div class="mb-3">
+                        <label for="bankName" class="form-label">Bank Name</label>
+                        <input type="text" class="form-control" id="bankName" placeholder="e.g. INDIAN BANK" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="accountNumber" class="form-label">Account Number:</label>
+                        <input type="text" class="form-control" id="accountNumber" name="accountNumber"
+                            placeholder="e.g. XXXXXXXXXXXX" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ifscCode" class="form-label">IFSC Code:</label>
+                        <input type="text" class="form-control" id="ifscCode" name="ifscCode"
+                            placeholder="e.g. IDCIXXXXx" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Fetch Transaction</button>
+                </form>
+            </div>
+
+            <!-- spreadsheet  -->
+            <div class="tab-pane fade " id="spreadsheet-as" role="tabpanel">
+                <div id="app">
+                    <h1>Order History</h1>
+                    <table id="spreadsheet">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Product Name</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Order Date</th>
+                                <th>Status</th>
+                                <th>Platform</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be dynamically populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <!-- education resources  -->
+            <div class="tab-pane fade " id="education-resources" role="tabpanel">
+                <div class="container">
+                    <h1 class="text-center mb-5">Vidoes</h1>
+
+                    <!-- Resources Cards -->
+                    <div class="row">
+                        <!-- Resource 1 -->
+                        <div class="col-md-4">
+                            <div class="card resource-card">
+                                <iframe src="https://www.youtube.com/embed/4XZIv4__sQA?si=5gmZcOT2Mq1UTkFT"
+                                    title="YouTube video player" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                                <div class="card-body">
+                                    <h5 class="card-title">Mastering Financial Literacy</h5>
+                                    <p class="card-text">This video is a beginner's guide to financial literacy,
+                                        covering key topics like earning income, investing, saving, spending, and
+                                        credit. It provides a solid foundation to help you make informed financial
+                                        decisions and start your financial journey, while also pointing out ways to
+                                        continue learning and improving your financial knowledge.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resource 2 -->
+                        <div class="col-md-4">
+                            <div class="card resource-card">
+                                <iframe src="https://www.youtube.com/embed/MXCvtC0HqLE?si=bBkuOU71Tl3pUjbt"
+                                    title="YouTube video player" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                                <div class="card-body">
+                                    <h5 class="card-title">Smart Money Tips for Teens</h5>
+                                    <p class="card-text">This video explores money management for teens, covering income
+                                        opportunities, budgeting, managing accounts, and building credit. It highlights
+                                        saving in high-yield accounts, investing in stocks and bonds, and starting
+                                        retirement planning early. The video concludes with a recap and invites
+                                        feedback.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resource 3 -->
+                        <div class="col-md-4">
+                            <div class="card resource-card">
+                                <iframe src="https://www.youtube.com/embed/AkMTxMN7res?si=U-9KDivjtmClFzt8"
+                                    title="YouTube video player" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                                <div class="card-body">
+                                    <h5 class="card-title">Finance MasterClass</h5>
+                                    <p class="card-text">This video discusses capitalism's impact on insecurity,
+                                        inflation rates (8-10%), and essential financial formulas. It offers strategies
+                                        to earn more, spend less, and invest in equity stocks, mutual funds, debt funds,
+                                        and real estate. Key topics include managing money, understanding taxes, and
+                                        financial tips for success, concluding with major takeaways and bonus learnings.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Articles Section -->
+                <h2 class="text-center my-5">Articles</h2>
+                <div class="row">
+                    <!-- Article 1 -->
+                    <div class="col-md-6">
+                        <div class="card article-card p-3">
+                            <h3 class="article-title">Why Financial Literacy Matters for Teens?</h3>
+                            <p>When you are financially literate, you have the essential foundation for a smart
+                                relationship with money. This can help start a lifelong journey of learning about the
+                                financial aspects of your life....</p>
+                            <a href="https://www.investopedia.com/terms/f/financial-literacy.asp"
+                                class="btn btn-secondary">Read More</a>
+                        </div>
+                    </div>
+                    <!-- Article 2 -->
+                    <div class="col-md-6">
+                        <div class="card article-card p-3">
+                            <h3 class="article-title">Economic Literacy Around the World</h3>
+                            <p>Financially literate people can make informed financial choices regarding saving,
+                                investing, borrowing, and more. Without an understanding of basic financial concepts,
+                                people are not ...</p>
+                            <a href="https://blogs.illinois.edu/view/7550/558591870" class="btn btn-secondary">Read
+                                More</a>
+                        </div>
+                    </div>
+                    <!-- Article 3 -->
+                    <div class="col-md-6">
+                        <div class="card article-card p-3">
+                            <h3 class="article-title">Are you budget literate?</h3>
+                            <p>Ever since the Union Budget 2020 was presented by Union Finance Minister Nirmala
+                                Sitharaman in the Parliament, several debates on the good, bad and ugly of the budget
+                                have been organised by...</p>
+                            <a href="https://www.thehindu.com/education/are-you-budget-literate/article30828013.ece"
+                                class="btn btn-secondary">Read More</a>
+                        </div>
+                    </div>
+                    <!-- Article 4 -->
+                    <div class="col-md-6">
+                        <div class="card article-card p-3">
+                            <h3 class="article-title">Why is financial literacy falling short?</h3>
+                            <p>There is no shortage of experts in the world of financial literacy. They furiously make
+                                online videos, organize social media events and live investment workshops, and...</p>
+                            <a href="https://www.newindianexpress.com/business/2024/Apr/15/why-is-financial-literacy-falling-short"
+                                class="btn btn-secondary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Settings -->
+            <div class="tab-pane fade " id="settings" role="tabpanel">
+                <h2 class="text-xl font-semibold mb-3">Settings</h2>
+                <form>
+                    <div class="mb-3">
+                        <label for="currency" class="form-label">Preferred Currency</label>
+                        <select class="form-select" id="currency">
+                            <option value="usd">USD</option>
+                            <option value="eur">EUR</option>
+                            <option value="inr">INR</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-secondary w-100" id="save-settings">Save Settings</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAOUwmmEhdfkAt6vhHkWin4bl0uMrp_qJ8",
+            authDomain: "finance-tracker-97c95.firebaseapp.com",
+            projectId: "finance-tracker-97c95",
+            storageBucket: "finance-tracker-97c95.firebasestorage.app",
+            messagingSenderId: "750027674630",
+            appId: "1:750027674630:web:f867ec7338d3525f735f87",
+            measurementId: "G-948Q0T0K5J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const analytics = getAnalytics(app);
+
+        // Utility to get currency symbol
+        function getCurrencySymbol(currency) {
+            const currencySymbols = { usd: "$", eur: "€", inr: "₹" };
+            return currencySymbols[currency.toLowerCase()] || "$";
+        }
+
+        // Fetch the user's preferred currency
+        async function fetchCurrencyPreference() {
+            try {
+                const docRef = doc(db, "settings", "preferences");
+                const docSnap = await getDoc(docRef);
+                return docSnap.exists() ? docSnap.data().currency : "usd";
+            } catch (e) {
+                console.error("Error fetching currency preference:", e);
+                return "usd";
+            }
+        }
+
+        // Save the user's preferred currency
+        async function saveCurrencyPreference(currency) {
+            try {
+                const currencyDocRef = doc(db, "settings", "preferences");
+                await setDoc(currencyDocRef, { currency, timestamp: new Date() });
+
+                // Reload the page after saving the currency preference
+                window.location.reload();
+            } catch (e) {
+                console.error("Error saving currency preference:", e);
+            }
+        }
+
+        // Fetch the budget and savings, and update the dashboard
+        async function fetchBalanceAndSavings() {
+            try {
+                const balanceDocRef = doc(db, "budgetPlans", "currentBudget");
+                const balanceDoc = await getDoc(balanceDocRef);
+
+                // Fetch currency preference
+                const preferredCurrency = await fetchCurrencyPreference();
+
+                if (balanceDoc.exists()) {
+                    const { budget, savings } = balanceDoc.data();
+                    const availableBalance = (budget || 0) - (savings || 0);
+
+                    // Update dashboard with preferred currency
+                    updateDashboardBalance(availableBalance, preferredCurrency);
+                    updateDashboardSavings(savings || 0, preferredCurrency);
+                } else {
+                    // Default to 0 with preferred currency
+                    updateDashboardBalance(0, preferredCurrency);
+                    updateDashboardSavings(0, preferredCurrency);
+                }
+            } catch (e) {
+                console.error("Error fetching balance and savings:", e);
+            }
+        }
+
+        // Update the balance section of the dashboard
+        function updateDashboardBalance(availableBalance, currency) {
+            const currencySymbol = getCurrencySymbol(currency);
+            const balanceDisplay = document.getElementById("balance");
+            if (balanceDisplay) {
+                balanceDisplay.textContent = `${currencySymbol} ${availableBalance.toFixed(2)}`;
+            }
+        }
+
+        // Update the savings section of the dashboard
+        function updateDashboardSavings(savings, currency) {
+            const currencySymbol = getCurrencySymbol(currency);
+            const savingsDisplay = document.getElementById("saved-amount-display");
+            if (savingsDisplay) {
+                savingsDisplay.textContent = `${currencySymbol} ${savings.toFixed(2)}`;
+            }
+        }
+
+
+
+        async function addTransaction(name, amount, type) {
+            try {
+                await addDoc(collection(db, "transactions"), {
+                    name,
+                    amount: parseFloat(amount),
+                    type,
+                    timestamp: new Date(),
+                });
+            } catch (e) {
+                console.error("Error adding transaction:", e);
+            }
+        }
+
+        async function displayTransactions() {
+            const transactionsList = document.querySelector(".list-group");
+            const categories = {};
+            try {
+                // Fetch currency preference
+                const preferredCurrency = await fetchCurrencyPreference();
+                const currencySymbol = getCurrencySymbol(preferredCurrency);
+
+                const querySnapshot = await getDocs(collection(db, "transactions"));
+                transactionsList.innerHTML = ""; // Clear previous transactions
+                querySnapshot.forEach((doc) => {
+                    const transaction = doc.data();
+                    const listItem = document.createElement("li");
+                    listItem.className = "list-group-item";
+                    listItem.textContent = `${transaction.name} (${transaction.type}): ${currencySymbol}${transaction.amount.toFixed(2)}`;
+                    transactionsList.appendChild(listItem);
+
+                    // Update categories for chart data
+                    if (categories[transaction.name]) {
+                        categories[transaction.name] += transaction.amount;
+                    } else {
+                        categories[transaction.name] = transaction.amount;
+                    }
+                });
+
+                updateBarChart(categories);
+            } catch (e) {
+                console.error("Error displaying transactions:", e);
+            }
+        }
+        
+        
+        function updateBarChart(categories) {
+            const ctx = document.getElementById("barChart").getContext("2d");
+
+            const labels = Object.keys(categories);
+            const data = Object.values(categories);
+
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Transaction Amounts",
+                        data: data,
+                        backgroundColor: '#36A2EB',
+                        borderColor: '#36A2EB',
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: "white" },
+                            grid: { color: "white" }
+                        },
+                        x: {
+                            ticks: { color: "white" },
+                            grid: { color: "white" }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: "white" } },
+                        tooltip: {
+                            backgroundColor: "rgba(0, 0, 0, 0.7)",
+                            titleColor: "white",
+                            bodyColor: "white",
+                        }
+                    }
+                }
+            });
+        }
+
+        document.getElementById("Budget-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const budgetInput = document.getElementById("budget-amount");
+            const savingsInput = document.getElementById("Saved-amount");
+            const budget = parseFloat(budgetInput.value) || 0;
+            const savings = parseFloat(savingsInput.value) || 0;
+            const currency = await fetchCurrencyPreference();
+
+            if (budget >= 0 && savings >= 0) {
+                try {
+                    const budgetDocRef = doc(db, "budgetPlans", "currentBudget");
+                    await setDoc(budgetDocRef, { budget, savings, currency, timestamp: new Date() });
+
+                    const availableBalance = budget - savings;
+                    updateDashboardBalance(availableBalance, currency);
+                    updateDashboardSavings(savings, currency);
+
+                    alert("Budget and savings have been successfully updated.");
+                    location.reload();
+                } catch (e) {
+                    console.error("Error saving budget and savings:", e);
+                }
+            } else {
+                console.error("Invalid budget or savings input.");
+            }
+        });
+
+        document.getElementById("transaction-form").addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const name = document.getElementById("transaction-name").value;
+            const amount = document.getElementById("transaction-amount").value;
+            const type = document.getElementById("transaction-type").value;
+
+            if (name && amount && type) {
+                await addTransaction(name, amount, type);
+                displayTransactions();
+                document.getElementById("transaction-name").value = "";
+                document.getElementById("transaction-amount").value = "";
+                document.getElementById("transaction-type").value = "income";
+            } else {
+                alert("Please fill in all fields.");
+            }
+        });
+
+        loadSettings();
+
+        async function loadSettings() {
+            const currency = await fetchCurrencyPreference();
+            document.getElementById("currency").value = currency;
+
+            await fetchBalanceAndSavings();
+            displayTransactions();
+        }
+
+        document.getElementById("save-settings").addEventListener("click", async () => {
+            const selectedCurrency = document.getElementById("currency").value;
+            await saveCurrencyPreference(selectedCurrency);
+        });
+
+        // Your updated mock data
+        /* const mockData = [
+            {
+                orderId: "12345",
+                productName: "Wireless Mouse",
+                price: 25.99,
+                quantity: 1,
+                orderDate: "2024-12-01",
+                status: "Delivered",
+                ecommercePlatform: "Flipkart",
+                category: "Electronics", // Replacing 'type' with 'category'
+                timestamp: new Date()
+            },
+            {
+                orderId: "12347",
+                productName: "Gaming Chair",
+                price: 129.99,
+                quantity: 1,
+                orderDate: "2024-10-03",
+                status: "Processing",
+                ecommercePlatform: "Amazon",
+                category: "Furniture", // Category as per the user input
+                timestamp: new Date()
+            },
+            {
+                orderId: "12347",
+                productName: "Gaming Chair",
+                price: 129.99,
+                quantity: 1,
+                orderDate: "2024-09-03",
+                status: "Processing",
+                ecommercePlatform: "Amazon",
+                category: "Furniture", // Category as per the user input
+                timestamp: new Date()
+            },
+            {
+                orderId: "12347",
+                productName: "Gaming Chair",
+                price: 129.99,
+                quantity: 1,
+                orderDate: "2024-08-03",
+                status: "Processing",
+                ecommercePlatform: "Amazon",
+                category: "Furniture", // Category as per the user input
+                timestamp: new Date()
+            }
+        ];
+ */
+        // Function to add mock data to Firestore
+        // const addMockData = async () => {
+        //     const collectionRef = collection(db, "orderHistory"); // Your existing collection name
+        //     try {
+        //         // Loop through mockData and add to Firestore
+        //         for (const data of mockData) {
+        //             const docRef = await addDoc(collectionRef, data);
+        //             console.log("Document written with ID: ", docRef.id);
+        //         }
+        //         console.log("Mock data added successfully!");
+        //     } catch (e) {
+        //         console.error("Error adding document: ", e);
+        //     }
+        // };
+
+        // // Call the function to add mock data to Firestore
+        // addMockData();
+
+        async function updatePieChart() {
+            try {
+                // Fetch data from Firestore
+                const balanceDocRef = doc(db, "budgetPlans", "currentBudget");
+                const balanceDoc = await getDoc(balanceDocRef);
+
+                if (balanceDoc.exists()) {
+                    const { budget, savings } = balanceDoc.data();
+
+                    const availableBalance = (budget || 0) - (savings || 0);
+
+                    // Create and display Pie Chart
+                    const ctx = document.getElementById("pieChart").getContext("2d");
+
+                    new Chart(ctx, {
+                        type: "pie",
+                        data: {
+                            labels: ["Available Balance", "Savings"],
+                            datasets: [{
+                                data: [availableBalance, savings],
+                                backgroundColor: ['#36A2EB', '#FF6384'],
+                                borderColor: ['#36A2EB', '#FF6384'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: "white" // Set text color for visibility
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: "rgba(0, 0, 0, 0.7)",
+                                    titleColor: "white",
+                                    bodyColor: "white"
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    console.warn("No budget data found in Firestore.");
+                }
+            } catch (e) {
+                console.error("Error updating Pie Chart:", e);
+            }
+        }
+
+        // Call the function to update the Pie Chart on page load
+        updatePieChart();
+
+        // Function to create a line chart showing month-wise expenses
+        async function updateLineChart() {
+            try {
+                // Fetch data from the Firestore "orderHistory" collection
+                const querySnapshot = await getDocs(collection(db, "orderHistory"));
+
+                const expensesByMonth = {};
+                const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data && data.price && data.orderDate) {
+                        const orderDate = new Date(data.orderDate);
+                        const month = orderDate.toLocaleString("default", { month: "short" }); // Get short month name
+
+                        if (expensesByMonth[month]) {
+                            expensesByMonth[month] += data.price;
+                        } else {
+                            expensesByMonth[month] = data.price;
+                        }
+                    }
+                });
+
+                // Sort months in calendar order
+                const sortedMonths = monthOrder.filter(month => expensesByMonth[month]);
+                const sortedExpenses = sortedMonths.map(month => expensesByMonth[month]);
+
+                const ctx = document.getElementById("lineGraph").getContext("2d");
+
+                // Create Line Chart
+                new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: sortedMonths,
+                        datasets: [
+                            {
+                                label: "Monthly Expenses",
+                                data: sortedExpenses,
+                                backgroundColor: "rgba(54, 162, 235, 0.2)",
+                                borderColor: "#36A2EB",
+                                borderWidth: 2,
+                                tension: 0.4,
+                            },
+                        ],
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: "white" },
+                                grid: { color: "white" },
+                            },
+                            x: {
+                                ticks: { color: "white" },
+                                grid: { color: "white" },
+                            },
+                        },
+                        plugins: {
+                            legend: {
+                                labels: { color: "white" },
+                            },
+                            tooltip: {
+                                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                                titleColor: "white",
+                                bodyColor: "white",
+                            },
+                        },
+                    },
+                });
+            } catch (e) {
+                console.error("Error updating Line Chart:", e);
+            }
+        }
+
+        // Call the function to update the Line Chart on page load
+        updateLineChart();
+
+        // Function to fetch data from Firestore (Spreadsheet)
+        const fetchOrderHistory = async () => {
+            try {
+                // Fetch currency preference
+                const preferredCurrency = await fetchCurrencyPreference();
+                const currencySymbol = getCurrencySymbol(preferredCurrency);
+
+                const collectionRef = collection(db, "orderHistory"); // Replace with your collection name
+                const querySnapshot = await getDocs(collectionRef);
+
+                const tableBody = document.querySelector("#spreadsheet tbody");
+                tableBody.innerHTML = ""; // Clear existing rows
+
+                // Populate rows with Firestore data
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                <td>${data.orderId}</td>
+                <td>${data.productName}</td>
+                <td>${currencySymbol}${data.price.toFixed(2)}</td>
+                <td>${data.quantity}</td>
+                <td>${data.orderDate}</td>
+                <td>${data.status}</td>
+                <td>${data.ecommercePlatform}</td>
+                <td>${data.category}</td>
+            `;
+
+                    tableBody.appendChild(row);
+                });
+            } catch (err) {
+                console.error("Error fetching data: ", err);
+            }
+        };
+
+        // Fetch and display data on page load
+        fetchOrderHistory().catch((err) => console.error("Error fetching data: ", err));
+    </script>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+    <script src="app.js"></script>
+    <script src="./bank Integration/bankIntegration.js"></script>
+</body>
+
+</html>

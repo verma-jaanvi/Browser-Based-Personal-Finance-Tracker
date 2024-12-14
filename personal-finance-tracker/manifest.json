@@ -1,0 +1,114 @@
+{
+  "manifest_version": 3,
+  "name": "Personal Budget Finance Tracker",
+  "version": "1.0",
+  "description": "Track expenses from email, e-commerce, bank transactions, and SMS.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "identity",
+    "webRequest",
+    "webRequestBlocking",
+    "https://finance-tracker-97c95-default-rtdb.asia-southeast1.firebasedatabase.app/*",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://www.amazon.com/*",
+    "https://www.amazon.in/*",
+    "https://www.ebay.com/*",
+    "https://www.flipkart.com/*",
+    "https://www.walmart.com/*",
+    "https://www.aliexpress.com/*",
+    "https://www.etsy.com/*",
+    "https://www.myntra.com/*",
+    "https://www.target.com/*",
+    "https://www.chase.com/*",
+    "https://www.bankofamerica.com/*",
+    "https://www.hdfcbank.com/*",
+    "https://www.icicibank.com/*",
+    "https://www.wellsfargo.com/*",
+    "https://www.citibank.com/*",
+    "https://www.onlinesbi.com/*",
+    "https://www.paypal.com/*",
+    "https://mail.google.com/*",
+    "https://mail.yahoo.com/*",
+    "https://outlook.live.com/*",
+    "https://www.google.com/*"
+  ],
+  "background": {
+    "service_worker": "firebase-config.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*",
+        "https://www.amazon.com/*",
+        "https://www.amazon.in/*",
+        "https://www.ebay.com/*",
+        "https://www.flipkart.com/*",
+        "https://www.walmart.com/*",
+        "https://www.aliexpress.com/*",
+        "https://www.etsy.com/*",
+        "https://www.myntra.com/*",
+        "https://www.target.com/*",
+        "https://www.chase.com/*",
+        "https://www.bankofamerica.com/*",
+        "https://www.hdfcbank.com/*",
+        "https://www.icicibank.com/*",
+        "https://www.wellsfargo.com/*",
+        "https://www.citibank.com/*",
+        "https://www.onlinesbi.com/*",
+        "https://www.paypal.com/*",
+        "https://mail.yahoo.com/*",
+        "https://outlook.live.com/*",
+        "https://www.google.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["abc.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/email-icon.png",
+        "assets/ecommerce-icon.png",
+        "assets/bank-icon.png",
+        "assets/sms-icon.png"
+      ],
+      "matches": [
+        "https://mail.google.com/*",
+        "https://www.amazon.com/*",
+        "https://www.amazon.in/*",
+        "https://www.ebay.com/*",
+        "https://www.flipkart.com/*",
+        "https://www.walmart.com/*",
+        "https://www.aliexpress.com/*",
+        "https://www.etsy.com/*",
+        "https://www.myntra.com/*",
+        "https://www.target.com/*",
+        "https://www.chase.com/*",
+        "https://www.bankofamerica.com/*",
+        "https://www.hdfcbank.com/*",
+        "https://www.icicibank.com/*",
+        "https://www.wellsfargo.com/*",
+        "https://www.citibank.com/*",
+        "https://www.onlinesbi.com/*",
+        "https://www.paypal.com/*",
+        "https://mail.yahoo.com/*",
+        "https://outlook.live.com/*",
+        "https://www.google.com/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "16": "assets/logo.png"
+    },
+    "default_title": "Personal Budget Tracker",
+    "default_popup": "dashboard.html"
+  },
+  "icons": {
+    "16": "assets/logo.png"
+  }
+}

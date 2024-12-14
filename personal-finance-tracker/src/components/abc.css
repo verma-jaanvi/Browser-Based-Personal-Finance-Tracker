@@ -1,0 +1,7 @@
+#insights-container {
+    z-index: 9999;
+  }
+  #dashboard-button:hover {
+    transform: scale(1.05);
+  }
+  

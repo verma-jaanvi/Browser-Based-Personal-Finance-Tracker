@@ -1,9 +1,22 @@
 {
+  "public": "public",
   "builds": [
     {
-      "src": "src/pages/dashboard.html",
+      "src": "public/index.html",
       "use": "@vercel/static"
     }
   ],
-  "outputDirectory": "src/pages"
+  "routes": [
+    { "src": "/dashboard", "dest": "/dashboard.html" },
+    { "src": "/styles.css", "dest": "/styles.css" },
+    { "src": "/script.js", "dest": "/script.js" },
+    { "src": "/firebase-config.js", "dest": "/firebase-config.js" },
+    { "src": "/budgetLogic.js", "dest": "/budgetLogic.js" },
+    { "src": "/components/(.*)", "dest": "/src/components/$1" },
+    { "src": "/assets/(.*)", "dest": "/src/assets/$1" },
+    { "src": "/pages/(.*)", "dest": "/src/pages/$1" }
+  ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/dashboard.html" }
+  ]
 }

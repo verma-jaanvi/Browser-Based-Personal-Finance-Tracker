@@ -1,0 +1,9 @@
+{
+  "builds": [
+    {
+      "src": "src/pages/index.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "outputDirectory": "src/pages"
+}

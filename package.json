@@ -1,16 +1,21 @@
 {
-  "name": "html-dashboard",
+  "name": "budget-tracker",
   "version": "1.0.0",
-  "description": "A simple HTML dashboard with Firebase integration",
-  "main": "index.html",
+  "description": "A simple budget tracker app",
   "scripts": {
-    "dev": "echo \"No dev server required\"",
-    "build": "echo \"No build process\"",
-    "start": "echo \"No start process\""
+    "start": "vercel dev", 
+    "build": "",           
+    "deploy": "vercel"      
   },
   "dependencies": {
-    "firebase": "^11.0.2"
+    "firebase": "^11.0.2"   
   },
   "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"        
+  },
+  "keywords": ["budget", "tracker", "static", "vercel"],
+  "author": "",
   "license": "ISC"
 }
+

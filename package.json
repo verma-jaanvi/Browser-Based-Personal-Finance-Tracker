@@ -1,18 +1,15 @@
 {
-  "name": "budget-tracker",
+  "name": "html-dashboard",
   "version": "1.0.0",
-  "description": "A personal budget tracker application",
-  "main": "index.js",
-  "dependencies": {
-    "firebase": "^11.0.2",
-    "next": "^13.5.0", 
-    "react": "^18.0.0", 
-    "react-dom": "^18.0.0"
-  },
+  "description": "A simple HTML dashboard with Firebase integration",
+  "main": "index.html",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "dev": "echo \"No dev server required\"",
+    "build": "echo \"No build process\"",
+    "start": "echo \"No start process\""
+  },
+  "dependencies": {
+    "firebase": "^11.0.2"
   },
   "devDependencies": {},
   "license": "ISC"

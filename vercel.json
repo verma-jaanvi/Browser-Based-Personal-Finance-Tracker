@@ -5,17 +5,15 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
-    { "src": "/dashboard", "dest": "/dashboard.html" },
-    { "src": "/styles.css", "dest": "/styles.css" },
-    { "src": "/script.js", "dest": "/script.js" },
-    { "src": "/firebase-config.js", "dest": "/firebase-config.js" },
-    { "src": "/budgetLogic.js", "dest": "/budgetLogic.js" },
-    { "src": "/components/(.*)", "dest": "/src/components/$1" },
-    { "src": "/assets/(.*)", "dest": "/src/assets/$1" },
-    { "src": "/pages/(.*)", "dest": "/src/pages/$1" }
-  ],
   "rewrites": [
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/styles.css", "destination": "/styles.css" },
+    { "source": "/script.js", "destination": "/script.js" },
+    { "source": "/firebase-config.js", "destination": "/firebase-config.js" },
+    { "source": "/budgetLogic.js", "destination": "/budgetLogic.js" },
+    { "source": "/components/(.*)", "destination": "/src/components/$1" },
+    { "source": "/assets/(.*)", "destination": "/src/assets/$1" },
+    { "source": "/pages/(.*)", "destination": "/src/pages/$1" },
     { "source": "/(.*)", "destination": "/dashboard.html" }
   ]
 }

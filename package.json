@@ -3,19 +3,18 @@
   "version": "1.0.0",
   "description": "A simple budget tracker app",
   "scripts": {
-    "start": "vercel dev", 
-    "build": "",           
-    "deploy": "vercel"      
+    "start": "vercel dev",     // For local development with Vercel
+    "build": "",               // Empty, as it's a static site
+    "deploy": "vercel"         // Deploy to Vercel
   },
   "dependencies": {
-    "firebase": "^11.0.2"   
+    "firebase": "^11.0.2"      // Firebase SDK
   },
   "devDependencies": {},
   "engines": {
-    "node": ">=14.0.0"        
+    "node": ">=14.0.0"         // Ensure Node.js version 14 or greater
   },
   "keywords": ["budget", "tracker", "static", "vercel"],
   "author": "",
   "license": "ISC"
 }
-

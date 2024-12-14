@@ -1,10 +1,19 @@
 {
+  "name": "budget-tracker",
+  "version": "1.0.0",
+  "description": "A personal budget tracker application",
+  "main": "index.js",
   "dependencies": {
-    "firebase": "^11.0.2"
+    "firebase": "^11.0.2",
+    "next": "^13.5.0", 
+    "react": "^18.0.0", 
+    "react-dom": "^18.0.0"
   },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
-  }
+  },
+  "devDependencies": {},
+  "license": "ISC"
 }
